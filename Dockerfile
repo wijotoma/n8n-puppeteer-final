@@ -20,8 +20,8 @@ RUN apk add --no-cache \
 ENV PUPPETEER_SKIP_CHROMIUM_DOWNLOAD=true \
     PUPPETEER_EXECUTABLE_PATH=/usr/bin/chromium-browser
 
-# Install Puppeteer
-RUN npm install -g puppeteer@21.11.0
+# Install older, stable Puppeteer version (19.11.1)
+RUN npm install -g puppeteer@19.11.1
 
 # Create cache directory with proper permissions
 RUN mkdir -p /home/node/.cache && \
