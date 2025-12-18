@@ -1,36 +1,53 @@
 FROM n8nio/n8n:latest
 
-# Stay as root for ALL installations
 USER root
 
 # Update npm first
 RUN npm install -g npm@latest
 
-# Install Chromium and dependencies
+# Install Chromium and ALL required dependencies
 RUN apk add --no-cache \
     chromium \
+    chromium-chromedriver \
     nss \
     freetype \
+    freetype-dev \
     harfbuzz \
     ca-certificates \
-    ttf-freefont
+    ttf-freefont \
+    font-noto-emoji \
+    wqy-zenhei \
+    udev \
+    ttf-opensans \
+    dbus \
+    libx11 \
+    libxcomposite \
+    libxdamage \
+    libxext \
+    libxfixes \
+    libxrandr \
+    libgbm \
+    libpangocairo-1.0-0 \
+    libpangoft2-1.0-0 \
+    libasound2
 
 # Environment variables for Puppeteer
 ENV PUPPETEER_SKIP_CHROMIUM_DOWNLOAD=true \
-    PUPPETEER_EXECUTABLE_PATH=/usr/bin/chromium-browser
+    PUPPETEER_EXECUTABLE_PATH=/usr/bin/chromium-browser \
+    CHROME_BIN=/usr/bin/chromium-browser
 
-# Install Puppeteer WHILE STILL ROOT
+# Install Puppeteer
 RUN npm install -g puppeteer@21.11.0
 
-# Create node user's cache directory with proper permissions
+# Create cache directory with proper permissions
 RUN mkdir -p /home/node/.cache && \
     chown -R node:node /home/node/.cache
 
-# NOW switch to node user (after all installations)
+# Fix permissions for Chromium
+RUN chmod 4755 /usr/bin/chromium-browser
+
 USER node
 
-# Expose port
 EXPOSE 5678
 
-# Start n8n
 CMD ["n8n"]
